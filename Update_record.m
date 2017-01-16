@@ -1,3 +1,10 @@
+%%%%%% 记录仿真中各状态的历史数据
+
+Nav_last = Nav;
+Body_last = Body;
+Force_last = Force;
+
+
 Nav_Array.Lat(i,1) = Nav.Lat; 
 Nav_Array.Lon(i,1) = Nav.Lon;
 Nav_Array.Alt(i,1) = Nav.Alt;
