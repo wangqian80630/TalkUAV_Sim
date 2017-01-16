@@ -7,8 +7,13 @@
 
 文件目录：
 	Main：主文件
+	
 	Pre_init: 参数初始化
+	
 	Update_dynamics：动力学运动学运算
+	
 	Update_record：数据历史记录
+	
 	Math_integrate：参数积分
+	
 	Post_plot：结果绘图
