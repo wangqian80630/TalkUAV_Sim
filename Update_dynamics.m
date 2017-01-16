@@ -15,12 +15,12 @@ Body.q_dot = temp(2,1);
 Body.r_dot = temp(3,1);
 
 % 对机体坐标系速度变化率积分获得速度，角速度变化率积分获得角速度
-Body.u = Update_integer(Body_last.u,Body_last.u_dot,Body.u_dot,Sim.DT);
-Body.v = Update_integer(Body_last.v,Body_last.v_dot,Body.v_dot,Sim.DT);
-Body.w = Update_integer(Body_last.w,Body_last.w_dot,Body.w_dot,Sim.DT);
-Body.p = Update_integer(Body_last.p,Body_last.p_dot,Body.p_dot,Sim.DT);
-Body.q = Update_integer(Body_last.q,Body_last.q_dot,Body.q_dot,Sim.DT);
-Body.r = Update_integer(Body_last.r,Body_last.r_dot,Body.r_dot,Sim.DT);
+Body.u = Math_integrate(Body_last.u,Body_last.u_dot,Body.u_dot,Sim.DT);
+Body.v = Math_integrate(Body_last.v,Body_last.v_dot,Body.v_dot,Sim.DT);
+Body.w = Math_integrate(Body_last.w,Body_last.w_dot,Body.w_dot,Sim.DT);
+Body.p = Math_integrate(Body_last.p,Body_last.p_dot,Body.p_dot,Sim.DT);
+Body.q = Math_integrate(Body_last.q,Body_last.q_dot,Body.q_dot,Sim.DT);
+Body.r = Math_integrate(Body_last.r,Body_last.r_dot,Body.r_dot,Sim.DT);
 
 % 将机体坐标系速度转换到导航坐标系
 temp = Mat.C_b2g * [Body.u;Body.v;Body.w];
@@ -28,15 +28,15 @@ Nav.Vx = temp(1,1);
 Nav.Vy = temp(2,1);
 Nav.Vz = temp(3,1);
 
-Nav.x = Update_integer(Nav.x,Nav_last.Vx,Nav.Vx,Sim.DT);
-Nav.y = Update_integer(Nav.y,Nav_last.Vy,Nav.Vy,Sim.DT);
-Nav.z = Update_integer(Nav.z,Nav_last.Vz,Nav.Vz,Sim.DT);
+Nav.x = Math_integrate(Nav.x,Nav_last.Vx,Nav.Vx,Sim.DT);
+Nav.y = Math_integrate(Nav.y,Nav_last.Vy,Nav.Vy,Sim.DT);
+Nav.z = Math_integrate(Nav.z,Nav_last.Vz,Nav.Vz,Sim.DT);
 
 % 将机体坐标系角速度转为欧拉角变化率
 Nav.Phi_dot = Body.p + tan(Nav.Theta)*(Body.q*sin(Nav.Phi)+Body.r*cos(Nav.Phi));
 Nav.Theta_dot = Body.q*cos(Nav.Phi)-Body.r*sin(Nav.Phi);
 Nav.Psi_dot = (Body.q*sin(Nav.Phi)+Body.r*cos(Nav.Phi))*sec(Nav.Theta);
 
-Nav.Phi = Update_integer(Nav.Phi,Nav_last.Phi_dot,Nav.Phi_dot,Sim.DT);
-Nav.Theta = Update_integer(Nav.Theta,Nav_last.Theta_dot,Nav.Theta_dot,Sim.DT);
-Nav.Psi = Update_integer(Nav.Psi,Nav_last.Psi_dot,Nav.Psi_dot,Sim.DT);
+Nav.Phi = Math_integrate(Nav.Phi,Nav_last.Phi_dot,Nav.Phi_dot,Sim.DT);
+Nav.Theta = Math_integrate(Nav.Theta,Nav_last.Theta_dot,Nav.Theta_dot,Sim.DT);
+Nav.Psi = Math_integrate(Nav.Psi,Nav_last.Psi_dot,Nav.Psi_dot,Sim.DT);
