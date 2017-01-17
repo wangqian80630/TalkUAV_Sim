@@ -130,7 +130,7 @@ Mat.Q_b2g = Mat.Q_g2b.';
 
 %  机体坐标系状态参数
 Body.p = 0.0;                                               % 绕X轴（滚转）角速度
-Body.q = 0.0;                                               % 绕Y轴（俯仰）角速度
+Body.q = 0.1;                                               % 绕Y轴（俯仰）角速度
 Body.r = 0.0;                                               % 绕Z轴（偏航）角速度
 Body.u = Mat.C_g2b(1,:) * [Nav.Vx;Nav.Vy;Nav.Vz];           % X轴速度
 Body.v = Mat.C_g2b(2,:) * [Nav.Vx;Nav.Vy;Nav.Vz];           % Y轴速度

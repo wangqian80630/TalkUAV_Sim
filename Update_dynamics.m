@@ -40,3 +40,17 @@ Nav.Psi_dot = (Body.q*sin(Nav.Phi)+Body.r*cos(Nav.Phi))*sec(Nav.Theta);
 Nav.Phi = Math_integrate(Nav.Phi,Nav_last.Phi_dot,Nav.Phi_dot,Sim.DT);
 Nav.Theta = Math_integrate(Nav.Theta,Nav_last.Theta_dot,Nav.Theta_dot,Sim.DT);
 Nav.Psi = Math_integrate(Nav.Psi,Nav_last.Psi_dot,Nav.Psi_dot,Sim.DT);
+
+% 更新地面坐标系到机体坐标系转换矩阵
+Mat.C_g2b(1,1) = cos(Nav.Theta)*cos(Nav.Psi);
+Mat.C_g2b(1,2) = cos(Nav.Theta)*sin(Nav.Psi);
+Mat.C_g2b(1,3) = -sin(Nav.Theta);
+Mat.C_g2b(2,1) = sin(Nav.Phi)*sin(Nav.Theta)*cos(Nav.Psi) - cos(Nav.Phi)*sin(Nav.Psi);
+Mat.C_g2b(2,2) = sin(Nav.Phi)*sin(Nav.Theta)*sin(Nav.Psi) + cos(Nav.Phi)*cos(Nav.Psi);
+Mat.C_g2b(2,3) = sin(Nav.Phi)*cos(Nav.Theta);
+Mat.C_g2b(3,1) = cos(Nav.Phi)*sin(Nav.Theta)*cos(Nav.Phi) + sin(Nav.Phi)*sin(Nav.Psi);
+Mat.C_g2b(3,2) = cos(Nav.Phi)*sin(Nav.Theta)*sin(Nav.Psi) - sin(Nav.Phi)*cos(Nav.Psi);
+Mat.C_g2b(3,3) = cos(Nav.Phi)*cos(Nav.Theta);
+
+% 更新机体坐标系到地面坐标系转换矩阵
+Mat.C_b2g = Mat.C_g2b.';
