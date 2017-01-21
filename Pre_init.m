@@ -38,7 +38,7 @@ Aero.Qbar = 0;
 % 当地铅垂（导航）坐标系参数、经纬度、欧拉角等
 Nav.Lat = 0;                    % 纬度
 Nav.Lon = 0;                    % 经度
-Nav.Alt = 0;                    % 高度
+Nav.Alt = 1000;                 % 高度
 Nav.Phi = 0;                    % 滚转角
 Nav.Theta = 0.1;                % 俯仰角
 Nav.Psi = 0.0;                  % 偏航角
@@ -47,7 +47,7 @@ Nav.Theta_dot = 0;              % 俯仰角变化率
 Nav.Psi_dot = 0;                % 偏航角变化率
 Nav.x = 0;                      % X轴坐标，向北为正
 Nav.y = 0;                      % Y轴坐标，向东为正
-Nav.z = 0;                      % Z轴坐标，向下为正
+Nav.z = -Nav.Alt;               % Z轴坐标，向下为正
 Nav.V = 0;                      % 总速度
 Nav.Vg = 50;                    % 地速
 Nav.Vx = Nav.Vg * cos(Nav.Psi);	% X轴速度，向北为正
