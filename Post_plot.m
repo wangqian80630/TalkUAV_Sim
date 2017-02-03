@@ -17,8 +17,18 @@ figure;
 subplot(3,1,1);plot(Sim.Time,Nav_Array.Phi);grid on;title('滚转角');
 subplot(3,1,2);plot(Sim.Time,Nav_Array.Theta);grid on;title('俯仰角');
 subplot(3,1,3);plot(Sim.Time,Nav_Array.Psi);grid on;title('偏航角');
+% 绘图机体坐标系加速度
+figure;
+subplot(3,1,1);plot(Sim.Time,Nav_Array.Vx_dot);grid on;title('导航坐标系X轴加速度');
+subplot(3,1,2);plot(Sim.Time,Nav_Array.Vy_dot);grid on;title('导航坐标系Y轴加速度');
+subplot(3,1,3);plot(Sim.Time,Nav_Array.Vz_dot);grid on;title('导航坐标系Z轴加速度');
 % 绘图机体坐标系速度
 figure;
 subplot(3,1,1);plot(Sim.Time,Nav_Array.Vx);grid on;title('导航坐标系X轴速度');
 subplot(3,1,2);plot(Sim.Time,Nav_Array.Vy);grid on;title('导航坐标系Y轴速度');
 subplot(3,1,3);plot(Sim.Time,Nav_Array.Vz);grid on;title('导航坐标系Z轴速度');
+% 绘图机体受力
+figure;
+subplot(3,1,1);plot(Sim.Time,Force_Array.Fx);grid on;title('机体坐标系X受力');
+subplot(3,1,2);plot(Sim.Time,Force_Array.Fy);grid on;title('机体坐标系Y受力');
+subplot(3,1,3);plot(Sim.Time,Force_Array.Fz);grid on;title('机体坐标系X受力');

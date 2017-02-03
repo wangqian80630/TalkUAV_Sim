@@ -23,23 +23,41 @@ Body.q = Math_integrate(Body_last.q,Body_last.q_dot,Body.q_dot,Sim.DT);
 Body.r = Math_integrate(Body_last.r,Body_last.r_dot,Body.r_dot,Sim.DT);
 
 % 将机体坐标系速度转换到导航坐标系
-temp = Mat.C_b2g * [Body.u;Body.v;Body.w];
-Nav.Vx = temp(1,1);
-Nav.Vy = temp(2,1);
-Nav.Vz = temp(3,1);
+temp = Mat.C_b2g * [Body.u_dot;Body.v_dot;Body.w_dot];
+Nav.Vx_dot = temp(1,1);
+Nav.Vy_dot = temp(2,1);
+Nav.Vz_dot = temp(3,1);
 
-Nav.x = Math_integrate(Nav.x,Nav_last.Vx,Nav.Vx,Sim.DT);
-Nav.y = Math_integrate(Nav.y,Nav_last.Vy,Nav.Vy,Sim.DT);
-Nav.z = Math_integrate(Nav.z,Nav_last.Vz,Nav.Vz,Sim.DT);
+Nav.Vx = Math_integrate(Nav_last.Vx,Nav_last.Vx_dot,Nav.Vx_dot,Sim.DT);
+Nav.Vy = Math_integrate(Nav_last.Vy,Nav_last.Vy_dot,Nav.Vy_dot,Sim.DT);
+Nav.Vz = Math_integrate(Nav_last.Vz,Nav_last.Vz_dot,Nav.Vz_dot,Sim.DT);
+
+Nav.Vg = sqrt(Nav.Vx^2 + Nav.Vy^2);
+
+Nav.x = Math_integrate(Nav_last.x,Nav_last.Vx,Nav.Vx,Sim.DT);
+Nav.y = Math_integrate(Nav_last.y,Nav_last.Vy,Nav.Vy,Sim.DT);
+Nav.z = Math_integrate(Nav_last.z,Nav_last.Vz,Nav.Vz,Sim.DT);
 
 % 将机体坐标系角速度转为欧拉角变化率
 Nav.Phi_dot = Body.p + tan(Nav.Theta)*(Body.q*sin(Nav.Phi)+Body.r*cos(Nav.Phi));
 Nav.Theta_dot = Body.q*cos(Nav.Phi)-Body.r*sin(Nav.Phi);
 Nav.Psi_dot = (Body.q*sin(Nav.Phi)+Body.r*cos(Nav.Phi))*sec(Nav.Theta);
 
-Nav.Phi = Math_integrate(Nav.Phi,Nav_last.Phi_dot,Nav.Phi_dot,Sim.DT);
-Nav.Theta = Math_integrate(Nav.Theta,Nav_last.Theta_dot,Nav.Theta_dot,Sim.DT);
-Nav.Psi = Math_integrate(Nav.Psi,Nav_last.Psi_dot,Nav.Psi_dot,Sim.DT);
+Nav.Phi = Math_integrate(Nav_last.Phi,Nav_last.Phi_dot,Nav.Phi_dot,Sim.DT);
+Nav.Theta = Math_integrate(Nav_last.Theta,Nav_last.Theta_dot,Nav.Theta_dot,Sim.DT);
+Nav.Psi = Math_integrate(Nav_last.Psi,Nav_last.Psi_dot,Nav.Psi_dot,Sim.DT);
+
+if(Nav.Phi > pi)
+    Nav.Phi = Nav.Phi - 2*pi;
+elseif(Nav.Phi < -pi)
+    Nav.Phi = 2*pi + Nav.Phi;
+end
+
+if(Nav.Psi > 2*pi)
+    Nav.Psi = Nav.Psi - 2*pi;
+elseif(Nav.Psi < 0)
+    Nav.Psi = Nav.Psi + 2*pi;
+end
 
 % 更新地面坐标系到机体坐标系转换矩阵
 Mat.C_g2b(1,1) = cos(Nav.Theta)*cos(Nav.Psi);
@@ -48,7 +66,7 @@ Mat.C_g2b(1,3) = -sin(Nav.Theta);
 Mat.C_g2b(2,1) = sin(Nav.Phi)*sin(Nav.Theta)*cos(Nav.Psi) - cos(Nav.Phi)*sin(Nav.Psi);
 Mat.C_g2b(2,2) = sin(Nav.Phi)*sin(Nav.Theta)*sin(Nav.Psi) + cos(Nav.Phi)*cos(Nav.Psi);
 Mat.C_g2b(2,3) = sin(Nav.Phi)*cos(Nav.Theta);
-Mat.C_g2b(3,1) = cos(Nav.Phi)*sin(Nav.Theta)*cos(Nav.Phi) + sin(Nav.Phi)*sin(Nav.Psi);
+Mat.C_g2b(3,1) = cos(Nav.Phi)*sin(Nav.Theta)*cos(Nav.Psi) + sin(Nav.Phi)*sin(Nav.Psi);
 Mat.C_g2b(3,2) = cos(Nav.Phi)*sin(Nav.Theta)*sin(Nav.Psi) - sin(Nav.Phi)*cos(Nav.Psi);
 Mat.C_g2b(3,3) = cos(Nav.Phi)*cos(Nav.Theta);
 
