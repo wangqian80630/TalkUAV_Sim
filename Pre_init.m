@@ -1,8 +1,8 @@
 %%%%% 参数定义和初始化文件
 
 %%%%% 仿真时间步长
-Sim.DT = 0.01;              % 仿真步长
-Sim.T = 10;                 % 仿真总时间
+Sim.DT = 0.001;              % 仿真步长
+Sim.T = 100;                 % 仿真总时间
 Sim.Time = 0:Sim.DT:Sim.T;          % 仿真时刻向量
 Sim.n = length(Sim.Time);   % 总时间点数量
 
@@ -38,18 +38,18 @@ Aero.Qbar = 0;
 % 当地铅垂（导航）坐标系参数、经纬度、欧拉角等
 Nav.Lat = 0;                    % 纬度
 Nav.Lon = 0;                    % 经度
-Nav.Alt = 0;                    % 高度
-Nav.Phi = 0;                    % 滚转角
-Nav.Theta = 0.1;                % 俯仰角
+Nav.Alt = 1000;                 % 高度
+Nav.Phi = 0.0;                  % 滚转角
+Nav.Theta = 0.0;                % 俯仰角
 Nav.Psi = 0.0;                  % 偏航角
 Nav.Phi_dot = 0;                % 滚转角变化率
 Nav.Theta_dot = 0;              % 俯仰角变化率
 Nav.Psi_dot = 0;                % 偏航角变化率
 Nav.x = 0;                      % X轴坐标，向北为正
 Nav.y = 0;                      % Y轴坐标，向东为正
-Nav.z = 0;                      % Z轴坐标，向下为正
+Nav.z = -Nav.Alt;               % Z轴坐标，向下为正
 Nav.V = 0;                      % 总速度
-Nav.Vg = 50;                    % 地速
+Nav.Vg = 100;                   % 地速
 Nav.Vx = Nav.Vg * cos(Nav.Psi);	% X轴速度，向北为正
 Nav.Vy = Nav.Vg * sin(Nav.Psi);	% Y轴速度，向东为正
 Nav.Vz = 0;                     % Z轴速度，向下为正
@@ -83,7 +83,8 @@ Nav_Array.z = zeros(Sim.n,1);
 Nav_Array.Vx = zeros(Sim.n,1);             
 Nav_Array.Vy = zeros(Sim.n,1);               
 Nav_Array.Vz = zeros(Sim.n,1);            
-Nav_Array.V = zeros(Sim.n,1);               
+Nav_Array.V = zeros(Sim.n,1); 
+Nav_Array.Vg = zeros(Sim.n,1); 
 Nav_Array.Vx_dot = zeros(Sim.n,1);          
 Nav_Array.Vy_dot = zeros(Sim.n,1);          
 Nav_Array.Vz_dot = zeros(Sim.n,1);           
@@ -110,7 +111,7 @@ Mat.C_g2b(1,3) = -sin(Nav.Theta);
 Mat.C_g2b(2,1) = sin(Nav.Phi)*sin(Nav.Theta)*cos(Nav.Psi) - cos(Nav.Phi)*sin(Nav.Psi);
 Mat.C_g2b(2,2) = sin(Nav.Phi)*sin(Nav.Theta)*sin(Nav.Psi) + cos(Nav.Phi)*cos(Nav.Psi);
 Mat.C_g2b(2,3) = sin(Nav.Phi)*cos(Nav.Theta);
-Mat.C_g2b(3,1) = cos(Nav.Phi)*sin(Nav.Theta)*cos(Nav.Phi) + sin(Nav.Phi)*sin(Nav.Psi);
+Mat.C_g2b(3,1) = cos(Nav.Phi)*sin(Nav.Theta)*cos(Nav.Psi) + sin(Nav.Phi)*sin(Nav.Psi);
 Mat.C_g2b(3,2) = cos(Nav.Phi)*sin(Nav.Theta)*sin(Nav.Psi) - sin(Nav.Phi)*cos(Nav.Psi);
 Mat.C_g2b(3,3) = cos(Nav.Phi)*cos(Nav.Theta);
 
@@ -124,13 +125,24 @@ Mat.Q_g2b(3,1) = 2 * (Nav.Q_1 * Nav.Q_3 + Nav.Q_0 * Nav.Q_2);
 Mat.Q_g2b(3,2) = 2 * (Nav.Q_2 * Nav.Q_3 - Nav.Q_0 * Nav.Q_1);
 Mat.Q_g2b(3,3) = 1 - 2 * (Nav.Q_1^2 + Nav.Q_2^2);
 
+%  机体坐标系角速度到欧拉角变化率
+Mat.C_body2euler(1,1) = 1;
+Mat.C_body2euler(1,2) = sin(Nav.Phi)*tan(Nav.Theta);
+Mat.C_body2euler(1,3) = cos(Nav.Phi)*tan(Nav.Theta);
+Mat.C_body2euler(2,1) = 0;
+Mat.C_body2euler(2,2) = cos(Nav.Phi);
+Mat.C_body2euler(2,3) = -sin(Nav.Phi);
+Mat.C_body2euler(3,1) = 0;
+Mat.C_body2euler(3,2) = sin(Nav.Phi)*sec(Nav.Theta);
+Mat.C_body2euler(3,3) = cos(Nav.Phi)*sec(Nav.Theta);
+
 %  机体坐标系转到地面坐标系
 Mat.C_b2g = Mat.C_g2b.';
 Mat.Q_b2g = Mat.Q_g2b.';
 
 %  机体坐标系状态参数
-Body.p = 0.0;                                               % 绕X轴（滚转）角速度
-Body.q = 0.1;                                               % 绕Y轴（俯仰）角速度
+Body.p = 0.1;                                               % 绕X轴（滚转）角速度
+Body.q = 0.0;                                               % 绕Y轴（俯仰）角速度
 Body.r = 0.0;                                               % 绕Z轴（偏航）角速度
 Body.u = Mat.C_g2b(1,:) * [Nav.Vx;Nav.Vy;Nav.Vz];           % X轴速度
 Body.v = Mat.C_g2b(2,:) * [Nav.Vx;Nav.Vy;Nav.Vz];           % Y轴速度

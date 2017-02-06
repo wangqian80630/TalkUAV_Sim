@@ -15,6 +15,7 @@ Nav_Array.Vx(i,1) = Nav.Vx;
 Nav_Array.Vy(i,1) = Nav.Vy;
 Nav_Array.Vz(i,1) = Nav.Vz;
 Nav_Array.V(i,1) = Nav.V;
+Nav_Array.Vg(i,1) = Nav.Vg;
 Nav_Array.Vx_dot(i,1) = Nav.Vx_dot; 
 Nav_Array.Vy_dot(i,1) = Nav.Vy_dot;
 Nav_Array.Vz_dot(i,1) = Nav.Vz_dot;
